@@ -1,11 +1,11 @@
 import React from "react";
 
-const CancelBookingView: React.FC = (): JSX.Element => {
+function CancelBookingView(): React.ReactElement {
     return (
         <div>
             <p>Cancel Booking View</p>
         </div>
     );
-};
+}
 
 export default CancelBookingView;
