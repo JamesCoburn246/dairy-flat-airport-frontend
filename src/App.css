@@ -1,3 +1,34 @@
+/*
+ * Colours
+ * #3C91E6 Tufts Blue
+ * #2A2D34 Gunmetal Grey
+ * #F3F8F2 Mint Cream
+ * #679436 Asparagus
+ * #FF8811 UT Orange
+ */
+body {
+  background-color: #2A2D34;
+}
+#root {
+  background-color: #679436;
+  max-width: 88%;
+  margin-left: 6%;
+  margin-right: 6%;
+}
+header {
+  background-color: #3C91E6;
+}
+footer {
+
+}
+
+header, footer, div#main {
+  padding: 1%;
+}
+header a, header a:link, header a:visited, header a:hover, header a:active {
+  text-decoration: none;
+}
+
 .App {
   text-align: center;
 }
@@ -14,7 +45,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #679436;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -37,13 +68,20 @@
   }
 }
 
-li.route-item {
-  list-style-type: none;
-  background-color: #61dafb;
+label, legend {
+  margin-right: 5px;
+  margin-bottom: 5px;
 }
 
-li.route-sub-item {
+.route-item {
+  padding: 2px 4px;
+  background-color: #f2f7f2;
+}
+.route-item, .route-sub-item, .booking-item, .booking-sub-item {
   list-style-type: none;
+}
+.booking-item a {
+  color: black;
 }
 
 .flex-vertical {
@@ -62,4 +100,30 @@ li.route-sub-item {
 
 .flex-stay {
   flex-grow: 0;
+}
+
+
+.route-item ul {
+  padding: 0;
+}
+.route-item div.flex-horizontal {
+  padding: 12px 0;
+}
+.route-item .flex-stay, .route-item .flex-grow {
+  padding: 0 16px;
+}
+.route-item .flex-stay {
+  border-right: 1px solid black;
+}
+
+button.flex-horizontal p {
+  text-align: center;
+  margin: 4px;
+}
+
+.navbar {
+  background-color: #f2f7f2;
+}
+.navbar div {
+  padding: 8px;
 }

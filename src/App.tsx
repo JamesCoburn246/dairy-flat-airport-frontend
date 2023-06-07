@@ -5,11 +5,12 @@ import {Navigate, useRoutes} from 'react-router-dom';
 // Directories.
 import MainLayout from "./pages/MainLayout";
 import Home from './pages/home/Home';
+import PageNotFoundView from "./pages/PageNotFoundView";
 import SearchFlightsView from "./pages/routes/SearchRoutesView";
 import CreateBookingView from './pages/bookings/CreateBookingView';
-import ViewBookingsView from "./pages/bookings/ViewBookingsView";
+import UserBookingsView from "./pages/bookings/UserBookingsView";
+import SingleBookingView from "./pages/bookings/SingleBookingView";
 import CancelBookingView from "./pages/bookings/CancelBookingView";
-import PageNotFoundView from "./pages/PageNotFoundView";
 
 function App() {
 
@@ -23,7 +24,8 @@ function App() {
             {path: 'flights', element: <SearchFlightsView />},
             {path: 'bookings', element: <Navigate to='/bookings/view' />},
             {path: 'bookings/create', element: <CreateBookingView />},
-            {path: 'bookings/view', element: <ViewBookingsView />},
+            {path: 'bookings/view/all', element: <UserBookingsView />},
+            {path: 'bookings/view/:booking_id', element: <SingleBookingView />},
             {path: 'bookings/cancel', element: <CancelBookingView />},
         ]
     }

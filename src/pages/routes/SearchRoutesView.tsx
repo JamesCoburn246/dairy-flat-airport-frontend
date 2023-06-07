@@ -1,34 +1,38 @@
 import React, {useEffect, useState} from "react";
-import {Airport, Route} from "../../types";
+import {Airport, Flight, Route} from "../../types";
 import RouteOption from "./RouteOption";
 
 import '../../App.css';
 
-const SearchRoutesView: React.FC = (): JSX.Element => {
-    const [origin, setOrigin] = useState<String>("");
-    const [dest, setDest] = useState<String>("");
-    const [date, setDate] = useState<String>(dateToString(new Date()));
+const SearchRoutesView: React.FC = (): React.ReactElement => {
+    const [origin, setOrigin] = useState<string>("");
+    const [dest, setDest] = useState<string>("");
+    const [date, setDate] = useState<string>("");
     const [airports, setAirports] = useState<Airport[]>([]);
     const [routes, setRoutes] = useState<Route[][]>([]);
+    const [name, setName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [dropdownOpened, setDropdown] = useState<boolean>(false);
 
     // Fetch initial airport data.
     useEffect(() => {
         if (airports.length === 0) {
             fetch(`http://localhost:4000/api/airports`)
-                .then(result => result.json())
-                .then((json) => {
-                    setAirports(json);
+                .then((result) => {
+                    if (result.ok)
+                        result.json().then((json) => setAirports(json));
                 });
         }
     });
 
     // Fetch route information.
     useEffect(() => {
-        if (origin.length === 4 && dest.length === 4) {
+        if (origin.length === 4 && dest.length === 4 && date !== "") {
+            console.log(origin, dest, date);
             fetch(`http://localhost:4000/api/routes?from=${origin}&to=${dest}&date=${date}`)
-                .then(result => result.json())
-                .then((json) => {
-                    setRoutes(json);
+                .then((result) => {
+                    if (result.ok)
+                        result.json().then((json) => setRoutes(json));
                 });
         }
     }, [origin, dest, date]);
@@ -37,10 +41,9 @@ const SearchRoutesView: React.FC = (): JSX.Element => {
         <div>
             <h1>Search For Routes</h1>
 
-            {
-                /** Dropdown menus. **/
-            }
+            {/** Flight filters. **/}
             <div>
+                <h2>Filter Flights</h2>
                 <label htmlFor={"origin-airport"}>From</label>
                 <select
                     id={"origin-airport"}
@@ -55,9 +58,6 @@ const SearchRoutesView: React.FC = (): JSX.Element => {
                     })}
                 </select>
 
-                {
-                    /** Dropdown menu. **/
-                }
                 <label htmlFor={"dest-airport"}>To</label>
                 <select
                     id={"dest-airport"}
@@ -71,23 +71,40 @@ const SearchRoutesView: React.FC = (): JSX.Element => {
                         );
                     })}
                 </select>
-            </div>
-            <div>
-                <h3>Date of Travel</h3>
-                <form id={"form"}>
-                    <input type={"date"} onChange={(event) => safeSetDate(event.target.value)}/>
-                </form>
-                <p>{date}</p>
-            </div>
 
-            <div>
-                <h2>Route Options:</h2>
-                <ul>
-                    {routes?.map((option: Route[]) => {
-                        return (<RouteOption route_option={option}/>);
-                    })}
-                </ul>
+                <label htmlFor={"date"}>Date of Departure:</label>
+                <input type={"date"} onChange={(event) => safeSetDate(event.target.value)}/>
             </div>
+            {/** End flight filters. **/}
+
+            {/** Date, name, and email fields. **/}
+            <div>
+                <h2>Customer Details</h2>
+                <form>
+                    <label htmlFor={"name"}>Name:</label>
+                    <input type={"text"} id={"name"} onChange={(event) => setName(event.target.value)}/>
+                    <label htmlFor={"email"}>Email:</label>
+                    <input type={"email"} id={"email"} onChange={(event) => setEmail(event.target.value)}/>
+                </form>
+            </div>
+            {/** End date, name, and email fields. **/}
+
+            {/** Route options. **/}
+            {routes?.length > 0 &&
+                <div>
+                    <h2>Route Options:</h2>
+                    <ul>
+                        {routes?.map((option: Route[], index: number) =>
+                            <RouteOption key={option[0].route_id}
+                                         route_option={option}
+                                         index={index}
+                                         date={date}
+                                         callback={bookFlightCallback}/>
+                        )}
+                    </ul>
+                </div>
+            }
+            {/** End route options. **/}
         </div>
     );
 
@@ -99,6 +116,43 @@ const SearchRoutesView: React.FC = (): JSX.Element => {
         const result: any = new Date(date);
         if (!isNaN(result) && result instanceof Date)
             setDate(dateToString(result));
+    }
+
+    function bookFlightCallback(routes: Route[]) {
+        if (date === "" || name === "" || email === "") {
+            alert("Please complete all fields before booking a flight.");
+        } else {
+            requestBooking(routes);
+        }
+    }
+
+    function requestBooking(routes: Route[]) {
+        const flights: Flight[] = [];
+        routes.forEach((route: Route) => {
+            flights.push({
+                flight_id: undefined,
+                route: route,
+                date: date,
+            });
+        });
+        fetch('http://localhost:4000/api/booking', {
+            method: 'POST',
+            headers: {
+                'Accept': 'text/html',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'flights': flights,
+                'name': name,
+                'email': email
+            }),
+        }).then((response) => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
+        }).catch((e) => {
+            console.error(e);
+        });
     }
 };
 

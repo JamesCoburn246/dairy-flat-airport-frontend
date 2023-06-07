@@ -5,15 +5,13 @@ import Footer from "../Footer";
 
 const MainLayout: React.FC = (): JSX.Element => {
     return (
-        <div style={{backgroundColor: 'yellow'}}>
+        <>
             <Header/>
-            <Outlet />
-            <br />
-            <button>
-                <Link to='/'>Back</Link>
-            </button>
+            <div id={"main"}>
+                <Outlet />
+            </div>
             <Footer/>
-        </div>
+        </>
     );
 };
 

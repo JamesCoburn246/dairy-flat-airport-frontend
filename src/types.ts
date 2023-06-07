@@ -2,6 +2,7 @@ export interface Booking {
     booking_id: string
     customer: User
     flights: Flight[]
+    total_price: number
 }
 
 export interface User {
@@ -10,17 +11,19 @@ export interface User {
 }
 
 export interface Flight {
-    flight_id: string
-    date: string // Only refers to the calendar date - departure/arrival is in Route.
+    flight_id: number | undefined
     route: Route
+    date: string // Only refers to the calendar date - departure/arrival is in Route.
 }
 
 export interface Route {
+    route_id: string
     origin: string // Refers to Airport.icao
     destination: string // Refers to Airport.icao
     depart: string
     arrive: string
-    service: number  // Refers to Service.service_id
+    price: number
+    service: Service  // Refers to Service.service_id
 }
 
 export interface Airport {

@@ -1,37 +1,51 @@
-import {Route} from "../../types";
+// React.
 import React from "react";
-import {Link} from "react-router-dom";
+
+// MUI.
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import FlightLandIcon from '@mui/icons-material/FlightLand';
+import AirplaneTicketIcon from '@mui/icons-material/AirplaneTicket';
+
+// Types.
+import {Route} from "../../types";
 
 interface Props {
-    route_option: Route[]
-}
-const style = {
-    borderStyle: 'groove',
-    padding: '2px 4px'
+    route_option: Route[],
+    index: number,
+    date: string,
+    callback: Function
 }
 function RouteOption(props: Props) {
 
     if (props.route_option) {
+        const ro: Route[] = props.route_option;
         return (
-            <li className={"route-item flex-horizontal"} style={style}>
-                <div className={"flex-stay"}>
-                    <ul>
-                        {props.route_option?.map((route) => {
-                            return (
-                                <li className={"route-sub-item"} key={route.origin + route.destination}>
-                                    {route.origin}-{route.destination}
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </div>
-                <div className={"flex-grow"}>
-                    <p>{props.route_option[0].depart} - {props.route_option[props.route_option.length-1].arrive}</p>
-                    <p>{props.route_option.length === 1 ? (props.route_option.length + " flight") : (props.route_option.length + " flights")}</p>
-                    <hr/>
-                    <Link to={"/book"}>
-                        <button>Book</button>
-                    </Link>
+            <li className={"route-item"}>
+                <div className={"flex-horizontal"}>
+                    <div className={"flex-stay"}>
+                        <h2>Route {props.index+1}</h2>
+                        <p><FlightTakeoffIcon />{ro[0].depart} - {ro[ro.length-1].arrive}<FlightLandIcon /></p>
+                        <p>{ro.length === 1 ? (ro.length + " flight") : (ro.length + " flights")} in this route</p>
+                        <hr/>
+                        <button className={"flex-horizontal"} onClick={() => {
+                            props.callback(ro)
+                        }}>
+                            <AirplaneTicketIcon /> <p>Book Route</p>
+                        </button>
+                    </div>
+                    {ro?.map((route: Route, index: number) => {
+                        return (
+                            <div className={"flight-item flex-stay"}>
+                                <ul>
+                                    <li className={"route-sub-item"} key={route.origin + route.destination}>
+                                        <h2>Flight {index+1} [{route.route_id}]</h2>
+                                        <p><FlightTakeoffIcon /> <b>{route.origin}</b></p>
+                                        <p><FlightLandIcon /> <b>{route.destination}</b></p>
+                                    </li>
+                                </ul>
+                            </div>
+                        );
+                    })}
                 </div>
             </li>
         );
