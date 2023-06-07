@@ -12,7 +12,6 @@ const SearchRoutesView: React.FC = (): React.ReactElement => {
     const [routes, setRoutes] = useState<Route[][]>([]);
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
-    const [dropdownOpened, setDropdown] = useState<boolean>(false);
 
     // Fetch initial airport data.
     useEffect(() => {
